@@ -41,3 +41,6 @@ yarn-error.log*
 .turbo/
 turborepo-temp/
 turbobot-temp/
+
+# TypeScript build info files
+**/tsconfig.tsbuildinfo
