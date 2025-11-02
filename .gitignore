@@ -44,3 +44,6 @@ turbobot-temp/
 
 # TypeScript build info files
 **/tsconfig.tsbuildinfo
+
+# VSCode
+.vscode/
