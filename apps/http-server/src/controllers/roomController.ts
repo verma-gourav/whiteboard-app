@@ -34,3 +34,74 @@ export const createRoom = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ error: "Failed to create room" });
   }
 };
+
+export const getAllRooms = async (_req: AuthRequest, res: Response) => {
+  try {
+    const rooms = await prisma.room.findMany({
+      include: {
+        admin: { select: { name: true } },
+        users: { select: { name: true } },
+      },
+    });
+
+    res.status(200).json(rooms);
+  } catch (err: any) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch rooms" });
+  }
+};
+
+export const getRoomBySlug = async (req: AuthRequest, res: Response) => {
+  try {
+    const { slug } = req.params;
+
+    const room = await prisma.room.findUnique({
+      where: { slug },
+      include: {
+        admin: { select: { name: true } },
+      },
+    });
+
+    if (!room) return res.status(404).json({ message: "Room not found" });
+
+    res.status(200).json(room);
+  } catch (err: any) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch room" });
+  }
+};
+
+export const joinRoom = async (req: AuthRequest, res: Response) => {
+  try {
+    const { slug } = req.params;
+    const userId = req.user?.id;
+
+    if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+    const room = await prisma.room.findUnique({ where: { slug } });
+    if (!room) return res.status(404).json({ message: "Room not found" });
+
+    await prisma.room.update({
+      where: { slug },
+      data: { users: { connect: { id: userId } } },
+    });
+
+    res.status(200).json({ message: "Joined room successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to join room" });
+  }
+};
+
+export const deleteRoom = async (req: AuthRequest, res: Response) => {
+  try {
+    const { slug } = req.params;
+
+    await prisma.room.delete({ where: { slug } });
+
+    res.status(200).json({ message: "Room deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to delete room" });
+  }
+};
