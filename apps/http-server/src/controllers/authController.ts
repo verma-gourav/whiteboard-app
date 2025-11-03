@@ -1,18 +1,14 @@
-import { Router } from "express";
+import { Request, Response } from "express";
 import { signinSchema, signupSchema } from "@repo/common";
 import { prisma } from "@repo/database";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "@repo/backend-common";
 
-const router: Router = Router();
-
-router.post("/signup", async (req, res) => {
+export const signup = async (req: Request, res: Response) => {
   const parsed = signupSchema.safeParse(req.body);
   if (!parsed.success) {
-    return res.status(400).json({
-      error: parsed.error,
-    });
+    return res.status(400).json({ error: parsed.error });
   }
 
   const data = parsed.data;
@@ -36,19 +32,17 @@ router.post("/signup", async (req, res) => {
       },
     });
 
-    res.status(201).json({ message: "Signup successfull" });
+    return res.status(201).json({ message: "Signup successful" });
   } catch (err: any) {
-    console.error("Signup error", err);
+    console.error("Signup error:", err);
     return res.status(500).json({ error: "Internal server error" });
   }
-});
+};
 
-router.post("/signin", async (req, res) => {
+export const signin = async (req: Request, res: Response) => {
   const parsed = signinSchema.safeParse(req.body);
   if (!parsed.success) {
-    return res.status(400).json({
-      error: parsed.error,
-    });
+    return res.status(400).json({ error: parsed.error });
   }
 
   const data = parsed.data;
@@ -71,11 +65,12 @@ router.post("/signin", async (req, res) => {
       expiresIn: "7d",
     });
 
-    res.status(200).json({ message: "Sigin successfull", token });
+    return res.status(200).json({
+      message: "Signin successful",
+      token,
+    });
   } catch (err: any) {
-    console.error("Signin error", err);
+    console.error("Signin error:", err);
     return res.status(500).json({ error: "Internal server error" });
   }
-});
-
-export default router;
+};

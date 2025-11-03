@@ -13,25 +13,31 @@ model User {
   email         String     @unique
   password      String
   name          String
-  photo         String?
-  rooms         Room[]
-  chats         Chat[]
+
+  rooms         Room[]    @relation("UserRooms")
+  adminOf       Room[]    @relation("AdminRooms")
+  boardEvents   BoardEvents[]
 }
 
 model Room {
   id          Int       @id @default(autoincrement())
   slug        String    @unique
   createdAt   DateTime  @default(now())
+
   adminId     String
-  admin       User      @relation(fields: [adminId], references: [id])
-  chats       Chat[]
+  admin       User      @relation("AdminRooms", fields: [adminId], references: [id]) 
+  users       User[]    @relation("UserRooms")
+
+  boardEvents BoardEvents[]
 }
 
-model Chat {
+model BoardEvents {
   id        Int       @id  @default(autoincrement())
   roomId    Int
-  message   String
+  data      Json
   userId    String
-  room      Room      @relation(fields: [roomId], references: [id])
-  user      User      @relation(fields: [userId], references: [id])
+  createdAt DateTime  @default(now())
+
+  room      Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
