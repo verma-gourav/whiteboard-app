@@ -11,6 +11,8 @@ dotenv.config({ path: rootEnvPath });
 
 export const JWT_SECRET = process.env.JWT_SECRET;
 export const HTTP_PORT = process.env.HTTP_PORT;
+export const WS_PORT = process.env.WS_PORT;
 
-if (!JWT_SECRET) console.warn(" JWT_SECRET not found");
-if (!HTTP_PORT) console.warn(" HTTP_PORT not found");
+if (!JWT_SECRET) console.warn("JWT_SECRET not found");
+if (!HTTP_PORT) console.warn("HTTP_PORT not found");
+if (!WS_PORT) console.warn("WS_PORT not found");
