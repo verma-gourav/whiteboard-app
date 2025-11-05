@@ -10,9 +10,17 @@ export const handleMessage = async (ws: WebSocket, raw: string) => {
 
     switch (msg.type) {
       case "JOIN_ROOM":
-        if (!rooms.has(msg.slug)) {
+        const room = await prisma.room.findUnique({
+          where: { slug: msg.slug },
+        });
+
+        if (!room) {
           ws.send(JSON.stringify({ type: "ERROR", message: "Room not found" }));
           break;
+        }
+
+        if (!rooms.has(msg.slug)) {
+          rooms.set(msg.slug, new Set());
         }
 
         rooms.get(msg.slug)!.add(ws);
@@ -25,7 +33,7 @@ export const handleMessage = async (ws: WebSocket, raw: string) => {
           data: {
             data: msg.data,
             room: { connect: { slug: msg.slug } },
-            user: { connect: { id: user.id } },
+            user: { connect: { id: user.userId } },
           },
         });
 
@@ -36,7 +44,7 @@ export const handleMessage = async (ws: WebSocket, raw: string) => {
               client.send(
                 JSON.stringify({
                   type: "BOARD_UPDATE",
-                  user: user.id,
+                  user: user.userId,
                   data: msg.data,
                 })
               );

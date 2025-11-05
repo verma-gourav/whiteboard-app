@@ -2,7 +2,7 @@ import { WebSocket } from "ws";
 import url from "url";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "@repo/backend-common";
-import { handleMessage } from "./messageHandler";
+import { handleMessage } from "./messageHandler.js";
 
 export const clients = new Map<string, WebSocket>();
 

@@ -1,6 +1,6 @@
 import { WebSocketServer } from "ws";
 import { WS_PORT } from "@repo/backend-common";
-import { handleConnection } from "./handlers/connectionHandler";
+import { handleConnection } from "./handlers/connectionHandler.js";
 
 const wss = new WebSocketServer({ port: Number(WS_PORT) });
 
