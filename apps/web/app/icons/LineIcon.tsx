@@ -8,7 +8,7 @@ const LineIcon = () => {
       stroke="currentColor"
       className="size-5"
     >
-      <path strokeLinecap="round" stroke-linejoin="round" d="M5 12h14" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14" />
     </svg>
   );
 };

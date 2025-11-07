@@ -25,7 +25,7 @@ const PencilIcon = () => {
         stroke="currentColor"
         strokeLinecap="round"
         strokeLinejoin="round"
-        stroke-width="8"
+        strokeWidth="8"
       />
     </svg>
   );
