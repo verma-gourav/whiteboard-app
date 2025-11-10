@@ -28,7 +28,7 @@ const Input = ({
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        className="bg-light w-full px-3 py-2 shadow-xs rounded-lg focus:outline-none"
+        className="bg-light text-black w-full px-3 py-2 shadow-xs rounded-lg focus:outline-none"
       />
     </div>
   );
