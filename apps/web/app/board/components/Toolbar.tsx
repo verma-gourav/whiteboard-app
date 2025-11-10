@@ -26,7 +26,8 @@ export type ToolType =
   | "pencil"
   | "text"
   | "image"
-  | "eraser";
+  | "eraser"
+  | null;
 
 interface ToolbarProps {
   activeTool: ToolType;

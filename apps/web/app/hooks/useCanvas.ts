@@ -59,6 +59,35 @@ const useCanvas = (
         setSavedImage(imageData);
       }
     }
+
+    // Text Tool
+    if (activeTool === "text") {
+      const text = prompt("Enter text:");
+      if (text && ctx) {
+        ctx.fillStyle = "#000";
+        ctx.fillText(text, pos.x, pos.y);
+      }
+      setIsDrawing(false);
+    }
+
+    // Image Tool
+    if (activeTool === "image") {
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = "image/*";
+      input.onchange = (event: any) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const img = new Image();
+        img.onload = () => {
+          ctx.drawImage(img, pos.x, pos.y, 150, 150); // fixed size for now
+        };
+        img.src = URL.createObjectURL(file);
+      };
+      input.click();
+      setIsDrawing(false);
+    }
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -121,6 +150,11 @@ const useCanvas = (
         ctx.stroke();
         break;
 
+      case "arrow":
+        ctx.lineWidth = 2;
+        drawArrow(ctx, x, y, pos.x, pos.y);
+        break;
+
       default:
         break;
     }
@@ -151,6 +185,35 @@ const useCanvas = (
       ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
       setSavedImage(null);
     }
+  };
+
+  // Draw arrow helper
+  const drawArrow = (
+    ctx: CanvasRenderingContext2D,
+    fromX: number,
+    fromY: number,
+    toX: number,
+    toY: number
+  ) => {
+    const headlen = 20; // length of arrow head
+    const dx = toX - fromX;
+    const dy = toY - fromY;
+    const angle = Math.atan2(dy, dx);
+
+    ctx.beginPath();
+    ctx.moveTo(fromX, fromY);
+    ctx.lineTo(toX, toY);
+    ctx.moveTo(toX, toY);
+    ctx.lineTo(
+      toX - headlen * Math.cos(angle - Math.PI / 6),
+      toY - headlen * Math.sin(angle - Math.PI / 6)
+    );
+    ctx.moveTo(toX, toY);
+    ctx.lineTo(
+      toX - headlen * Math.cos(angle + Math.PI / 6),
+      toY - headlen * Math.sin(angle + Math.PI / 6)
+    );
+    ctx.stroke();
   };
 
   return {

@@ -8,3 +8,7 @@ export { default as LineIcon } from "./LineIcon";
 export { default as PencilIcon } from "./PencilIcon";
 export { default as ImageIcon } from "./ImageIcon";
 export { default as EraserIcon } from "./EraserIcon";
+export { default as SunIcon } from "./SunIcon";
+export { default as MoonIcon } from "./MoonIcon";
+export { default as DownloadIcon } from "./DownloadIcon";
+export { default as MenuIcon } from "./MenuIcon";
