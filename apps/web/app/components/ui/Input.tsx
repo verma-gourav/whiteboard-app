@@ -19,7 +19,7 @@ const Input = ({
     <div className={`flex flex-col gap-1 w-full ${className}`}>
       <label
         htmlFor={label.replace(/\s+/g, "-").toLowerCase()}
-        className="text-dark dark:text-light text-sm font-medium"
+        className="text-gray-500 text-sm font-medium"
       >
         {label}
       </label>
@@ -28,7 +28,7 @@ const Input = ({
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        className="bg-light dark:bg-dark w-full px-3 py-2 shadow-xs rounded-lg focus:outline-none"
+        className="bg-light w-full px-3 py-2 shadow-xs rounded-lg focus:outline-none"
       />
     </div>
   );

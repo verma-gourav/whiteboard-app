@@ -24,7 +24,7 @@ export const signup = async (req: Request, res: Response) => {
 
     const hashed = await bcrypt.hash(data.password, 10);
 
-    await prisma.user.create({
+    const user = await prisma.user.create({
       data: {
         email: data.email,
         password: hashed,
@@ -32,7 +32,11 @@ export const signup = async (req: Request, res: Response) => {
       },
     });
 
-    return res.status(201).json({ message: "Signup successful" });
+    const token = jwt.sign({ userId: user.id }, JWT_SECRET!, {
+      expiresIn: "7d",
+    });
+
+    return res.status(201).json({ message: "Signup successful", token });
   } catch (err: any) {
     console.error("Signup error:", err);
     return res.status(500).json({ error: "Internal server error" });
