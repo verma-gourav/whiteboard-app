@@ -20,18 +20,12 @@
   /* Light Mode */
   body {
     @apply bg-light text-gray-900;
-    background-image: radial-gradient(circle, #c5baff 1px, transparent 1px);
-    background-size: 24px 24px;
-    background-attachment: fixed;
   }
 
   /* Dark Mode */
   @media (prefers-color-scheme: dark) {
     body {
       @apply bg-dark text-gray-100;
-      background-image: radial-gradient(circle, #c5baff4e 1px, transparent 1px);
-      background-size: 24px 24px;
-      background-attachment: fixed;
     }
   }
 }

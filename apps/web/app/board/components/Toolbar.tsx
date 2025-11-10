@@ -50,7 +50,7 @@ const Toolbar = ({ activeTool, onToolChange }: ToolbarProps) => {
   ];
 
   return (
-    <div className="inline-flex justify-between h-auto border border-gray-300 shadow-sm rounded-xl transition-all duration-300">
+    <div className="inline-flex bg-light dark:bg-dark justify-between h-auto border border-gray-300 shadow-sm rounded-xl transition-all duration-300">
       {tools.map((tool) => (
         <Button
           key={tool.type}
