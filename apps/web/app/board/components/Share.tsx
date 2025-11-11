@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui";
+import axios from "axios";
 
 const Share = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,12 +19,28 @@ const Share = () => {
     setError("");
 
     try {
-      // Simulate API call (later you’ll hit ws-server or http-server)
       const sessionId = crypto.randomUUID();
-      const link = `${window.location.origin}/board/${sessionId}`;
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("Sign in required!");
+
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/room/`,
+        { slug: sessionId },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const slug = res.data?.room?.slug ?? sessionId;
+      const link = `${window.location.origin}/board/${slug}`;
       setShareLink(link);
-    } catch (err) {
-      setError("Failed to start session.");
+    } catch (err: any) {
+      const message =
+        err.response?.data?.message || err.message || "Failed to create room";
+      throw new Error(message);
     } finally {
       setLoading(false);
     }

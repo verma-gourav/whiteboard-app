@@ -12,5 +12,5 @@ export const signinSchema = z.object({
 });
 
 export const roomSchema = z.object({
-  slug: z.string().min(3).max(30),
+  slug: z.string().min(3).max(50),
 });

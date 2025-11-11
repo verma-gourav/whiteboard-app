@@ -1,20 +1,34 @@
 "use client";
 
 import useCanvas from "@/hooks/useCanvas";
-import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
+import React, {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+} from "react";
 import { ToolType } from "./Toolbar";
 
 interface CanvasProps {
+  mode?: "local" | "collab";
   activeTool: ToolType;
+  onAction?: (action: any) => void;
+  remoteAction?: any;
 }
 
 const Canvas = forwardRef<HTMLCanvasElement, CanvasProps>(
-  ({ activeTool }, ref) => {
+  ({ activeTool, mode = "local", onAction, remoteAction }, ref) => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const parentRef = useRef<HTMLDivElement | null>(null);
 
-    const { handleMouseDown, handleMouseMove, handleMouseUp, clearCanvas } =
-      useCanvas(canvasRef, activeTool);
+    const {
+      handleMouseDown,
+      handleMouseMove,
+      handleMouseUp,
+      clearCanvas,
+      applyRemoteAction,
+    } = useCanvas(canvasRef, activeTool);
 
     useImperativeHandle(ref, () => canvasRef.current as HTMLCanvasElement);
 
@@ -44,6 +58,26 @@ const Canvas = forwardRef<HTMLCanvasElement, CanvasProps>(
       return () => window.removeEventListener("resize", resize);
     }, []);
 
+    useEffect(() => {
+      if (mode === "collab" && remoteAction) {
+        applyRemoteAction(remoteAction);
+      }
+    }, [remoteAction, mode, applyRemoteAction]);
+
+    // attach drawing event listeners
+    const handleDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+      handleMouseDown(e);
+    };
+    const handleMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+      handleMouseMove(e);
+    };
+    const handleUp = (e: React.MouseEvent<HTMLCanvasElement>) => {
+      const action = handleMouseUp(e);
+      if (mode === "collab" && action && onAction) {
+        onAction(action);
+      }
+    };
+
     return (
       <div
         ref={parentRef}
@@ -57,9 +91,9 @@ const Canvas = forwardRef<HTMLCanvasElement, CanvasProps>(
         <canvas
           ref={canvasRef}
           className="cursor-crosshair"
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
+          onMouseDown={handleDown}
+          onMouseMove={handleMove}
+          onMouseUp={handleUp}
         />
       </div>
     );

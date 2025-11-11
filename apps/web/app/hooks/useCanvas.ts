@@ -160,24 +160,74 @@ const useCanvas = (
     }
   };
 
-  const handleMouseUp = () => {
-    if (!ctx) return;
+  const handleMouseUp = (e?: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!ctx || !startPos) return;
 
-    // save current canvas
-    if (activeTool !== "pencil" && activeTool !== "eraser") {
-      if (ctx.canvas) {
-        const imageData = ctx.getImageData(
-          0,
-          0,
-          ctx.canvas.width,
-          ctx.canvas.height
-        );
-        setSavedImage(imageData);
-      }
+    const pos = e ? getMousePos(e) : startPos;
+    const { x, y } = startPos;
+
+    let action: any = null;
+
+    switch (activeTool) {
+      case "pencil":
+      case "eraser":
+        action = { type: activeTool, x, y, toX: pos.x, toY: pos.y };
+        break;
+      case "rectangle":
+      case "circle":
+      case "line":
+      case "diamond":
+      case "arrow":
+        action = { type: activeTool, from: { x, y }, to: pos };
+        break;
     }
 
     setIsDrawing(false);
     setStartPos(null);
+    return action;
+  };
+
+  // apply incoming remote action
+  const applyRemoteAction = (action: any) => {
+    if (!ctx) return;
+    switch (action.type) {
+      case "pencil":
+        ctx.beginPath();
+        ctx.moveTo(action.x, action.y);
+        ctx.lineTo(action.toX, action.toY);
+        ctx.stroke();
+        break;
+
+      case "rectangle":
+        ctx.strokeRect(
+          action.from.x,
+          action.from.y,
+          action.to.x - action.from.x,
+          action.to.y - action.from.y
+        );
+        break;
+      case "circle":
+        const radius = Math.sqrt(
+          (action.to.x - action.from.x) ** 2 +
+            (action.to.y - action.from.y) ** 2
+        );
+        ctx.beginPath();
+        ctx.arc(action.from.x, action.from.y, radius, 0, 2 * Math.PI);
+        ctx.stroke();
+        break;
+      case "line":
+        ctx.beginPath();
+        ctx.moveTo(action.from.x, action.from.y);
+        ctx.lineTo(action.to.x, action.to.y);
+        ctx.stroke();
+        break;
+      case "arrow":
+        drawArrow(ctx, action.from.x, action.from.y, action.to.x, action.to.y);
+        break;
+      case "text":
+        ctx.fillText(action.text, action.x, action.y);
+        break;
+    }
   };
 
   const clearCanvas = () => {
@@ -221,6 +271,7 @@ const useCanvas = (
     handleMouseMove,
     handleMouseUp,
     clearCanvas,
+    applyRemoteAction,
   };
 };
 
