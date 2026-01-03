@@ -64,7 +64,8 @@ const useCanvas = (
     if (activeTool === "text") {
       const text = prompt("Enter text:");
       if (text && ctx) {
-        ctx.fillStyle = "#000";
+        ctx.fillStyle = "#a8a5ff";
+        ctx.font = "30px Arial";
         ctx.fillText(text, pos.x, pos.y);
       }
       setIsDrawing(false);
@@ -105,7 +106,7 @@ const useCanvas = (
     switch (activeTool) {
       case "pencil":
         ctx.lineWidth = 2;
-        ctx.strokeStyle = "#000";
+        ctx.strokeStyle = "#a8a5ff";
         ctx.lineTo(pos.x, pos.y);
         ctx.stroke();
         ctx.moveTo(pos.x, pos.y);
@@ -122,7 +123,7 @@ const useCanvas = (
 
       case "rectangle":
         ctx.lineWidth = 2;
-        ctx.strokeStyle = "#000";
+        ctx.strokeStyle = "#a8a5ff";
         ctx.strokeRect(x, y, pos.x - x, pos.y - y);
         break;
 
